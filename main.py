@@ -259,9 +259,9 @@ if __name__ == '__main__':
     optimizer = torch.optim.AdamW(model.parameters(), lr=0.00005, weight_decay=0.0001)
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=SL)
     
-    state = os.path.join(current_dir, '..', 'RES', 'LLM', 'CHECKPOINTING', '2024_12_14_15_25_38MolTrans-BIOSNAP[195567].pth')
-    load = torch.load(state, map_location=device)
-    model.load_state_dict(load['model_state_dict'])
+    # state = os.path.join(current_dir, '..', 'RES', 'LLM', 'CHECKPOINTING', '2024_12_14_15_25_38MolTrans-BIOSNAP[195567].pth')
+    # load = torch.load(state, map_location=device)
+    # model.load_state_dict(load['model_state_dict'])
     # optimizer.load_state_dict(load['optimizer_state_dict'])
     
     total_params = sum(p.numel() for p in model.parameters())
