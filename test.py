@@ -95,15 +95,12 @@ def test(model, device, X, Y):
         M = "ER-"
 
     tn, fp, fn, tp = confusion_matrix(all_labels, all_predictions).ravel()
-    
     sensitivity = tp / (tp + fn) if (tp + fn) != 0 else 0
     specificity = tn / (tn + fp) if (tn + fp) != 0 else 0
-    
     accuracy = accuracy_score(all_labels, all_predictions)
     roc_auc = roc_auc_score(all_labels, all_predictions)
     precisions, recalls, _ = precision_recall_curve(all_labels, all_predictions)
     aupr = auc(recalls, precisions)
-    
     return accuracy, roc_auc, aupr, sensitivity, specificity, M
     
 def Predict(model, idx, max_new_tokens, context_size):
