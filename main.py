@@ -12,8 +12,8 @@ import seaborn as sns
 import os
 
 current_dir = os.path.dirname(__file__)
-database_file = os.path.join(current_dir, '..', 'DATABASE', 'FULL_DATABASE1.txt')
-database_MolTrans = os.path.join(current_dir, '..', 'DATABASE', 'MolTrans')
+database_file = os.path.join(current_dir, 'FULL_DATABASE1.txt')
+database_dir = os.path.join(current_dir, 'database')
 res = os.path.join(current_dir, '..', 'RES')
 
 class Tokenizer:
@@ -115,9 +115,9 @@ def LOADDATA(CC, DD):
         TRAIN_DATABASE = FULL_DATABASE[:len(FULL_DATABASE)-20000]
     
     elif CC == "MolTrans":
-        TRAIN_DATABASE = DATADF(pd.read_csv(os.path.join(database_MolTrans,DD,"train.csv"))).apply(ED, axis=1).tolist()
-        VAL_DATABASE = DATADF(pd.read_csv(os.path.join(database_MolTrans,DD,"val.csv"))).apply(ED, axis=1).tolist()
-        TEST_DATABASE = DATADF(pd.read_csv(os.path.join(database_MolTrans,DD,"test.csv"))).apply(ED, axis=1).tolist()
+        TRAIN_DATABASE = DATADF(pd.read_csv(os.path.join(database_dir,DD,"train.csv"))).apply(ED, axis=1).tolist()
+        VAL_DATABASE = DATADF(pd.read_csv(os.path.join(database_dir,DD,"val.csv"))).apply(ED, axis=1).tolist()
+        TEST_DATABASE = DATADF(pd.read_csv(os.path.join(database_dir,DD,"test.csv"))).apply(ED, axis=1).tolist()
         print(TRAIN_DATABASE[0])
         
     print(f"=========== FL: {len(TRAIN_DATABASE)}")
