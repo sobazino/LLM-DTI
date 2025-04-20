@@ -2,156 +2,151 @@ import torch
 import torch.nn as nn
 import random
 
-class MultiHeadAttention(nn.Module):
-    def __init__(self, d_in, d_out, context_length, dropout, num_heads, qkv_bias=False):
-        super().__init__()
-        self.d_out = d_out
-        self.num_heads = num_heads
-        self.head_dim = d_out // num_heads
-        self.W_query = nn.Linear(d_in, d_out, bias=qkv_bias)
-        self.W_key = nn.Linear(d_in, d_out, bias=qkv_bias)
-        self.W_value = nn.Linear(d_in, d_out, bias=qkv_bias)
-        self.out_proj = nn.Linear(d_out, d_out)
-        self.dropout = nn.Dropout(dropout)
-        self.register_buffer('mask', torch.triu(torch.ones(context_length, context_length), diagonal=1))
-    def forward(self, x):
-        b, num_tokens, d_in = x.shape
-        keys = self.W_key(x)
-        queries = self.W_query(x)
-        values = self.W_value(x)
-        keys = keys.view(b, num_tokens, self.num_heads, self.head_dim)
-        values = values.view(b, num_tokens, self.num_heads, self.head_dim)
-        queries = queries.view(b, num_tokens, self.num_heads, self.head_dim)
-        keys = keys.transpose(1, 2)
-        queries = queries.transpose(1, 2)
-        values = values.transpose(1, 2)
-        attn_scores = queries @ keys.transpose(2, 3)
-        mask_bool = self.mask.bool()[:num_tokens, :num_tokens]
-        attn_scores.masked_fill_(mask_bool, -torch.inf)
-        attn_weights = torch.softmax(attn_scores / keys.shape[-1]**0.5, dim=-1)
-        attn_weights = self.dropout(attn_weights)
-        context_vec = (attn_weights @ values).transpose(1, 2)
-        context_vec = context_vec.contiguous().view(b, num_tokens, self.d_out)
-        context_vec = self.out_proj(context_vec)
-        return context_vec
+class MultiHeadAttention (nn .Module ):#line:1
+    def __init__ (OO0O0OOOOO0O0OOO0 ,OO0O0O0O0O00000OO ,OOOOOOOO0O0OOOOOO ,O0OO00O0OOO0000O0 ,OOOOO000OOOO00OO0 ,OO0OO0O000OO0O0OO ,qkv_bias =False ):#line:2
+        super ().__init__ ()#line:3
+        OO0O0OOOOO0O0OOO0 .d_out =OOOOOOOO0O0OOOOOO #line:4
+        OO0O0OOOOO0O0OOO0 .num_heads =OO0OO0O000OO0O0OO #line:5
+        OO0O0OOOOO0O0OOO0 .head_dim =OOOOOOOO0O0OOOOOO //OO0OO0O000OO0O0OO #line:6
+        OO0O0OOOOO0O0OOO0 .W_query =nn .Linear (OO0O0O0O0O00000OO ,OOOOOOOO0O0OOOOOO ,bias =qkv_bias )#line:7
+        OO0O0OOOOO0O0OOO0 .W_key =nn .Linear (OO0O0O0O0O00000OO ,OOOOOOOO0O0OOOOOO ,bias =qkv_bias )#line:8
+        OO0O0OOOOO0O0OOO0 .W_value =nn .Linear (OO0O0O0O0O00000OO ,OOOOOOOO0O0OOOOOO ,bias =qkv_bias )#line:9
+        OO0O0OOOOO0O0OOO0 .out_proj =nn .Linear (OOOOOOOO0O0OOOOOO ,OOOOOOOO0O0OOOOOO )#line:10
+        OO0O0OOOOO0O0OOO0 .dropout =nn .Dropout (OOOOO000OOOO00OO0 )#line:11
+        OO0O0OOOOO0O0OOO0 .register_buffer ('mask',torch .triu (torch .ones (O0OO00O0OOO0000O0 ,O0OO00O0OOO0000O0 ),diagonal =1 ))#line:12
+    def forward (O000O0O0OOO0OO0OO ,OO00O00O0OO00O00O ):#line:13
+        O0O00O00O00OO0OOO ,O00O00O0OO000O0OO ,OOOO0OOO0OOO00OO0 =OO00O00O0OO00O00O .shape #line:14
+        OOOO000OO00O0O00O =O000O0O0OOO0OO0OO .W_key (OO00O00O0OO00O00O )#line:15
+        O00OO0000O0OO0000 =O000O0O0OOO0OO0OO .W_query (OO00O00O0OO00O00O )#line:16
+        O00O0O0OOOOOO00O0 =O000O0O0OOO0OO0OO .W_value (OO00O00O0OO00O00O )#line:17
+        OOOO000OO00O0O00O =OOOO000OO00O0O00O .view (O0O00O00O00OO0OOO ,O00O00O0OO000O0OO ,O000O0O0OOO0OO0OO .num_heads ,O000O0O0OOO0OO0OO .head_dim )#line:18
+        O00O0O0OOOOOO00O0 =O00O0O0OOOOOO00O0 .view (O0O00O00O00OO0OOO ,O00O00O0OO000O0OO ,O000O0O0OOO0OO0OO .num_heads ,O000O0O0OOO0OO0OO .head_dim )#line:19
+        O00OO0000O0OO0000 =O00OO0000O0OO0000 .view (O0O00O00O00OO0OOO ,O00O00O0OO000O0OO ,O000O0O0OOO0OO0OO .num_heads ,O000O0O0OOO0OO0OO .head_dim )#line:20
+        OOOO000OO00O0O00O =OOOO000OO00O0O00O .transpose (1 ,2 )#line:21
+        O00OO0000O0OO0000 =O00OO0000O0OO0000 .transpose (1 ,2 )#line:22
+        O00O0O0OOOOOO00O0 =O00O0O0OOOOOO00O0 .transpose (1 ,2 )#line:23
+        OO0000OOOOOOOOOOO =O00OO0000O0OO0000 @OOOO000OO00O0O00O .transpose (2 ,3 )#line:24
+        OO0OOO0O000O000OO =O000O0O0OOO0OO0OO .mask .bool ()[:O00O00O0OO000O0OO ,:O00O00O0OO000O0OO ]#line:25
+        OO0000OOOOOOOOOOO .masked_fill_ (OO0OOO0O000O000OO ,-torch .inf )#line:26
+        OO0000O0O0OO0O0OO =torch .softmax (OO0000OOOOOOOOOOO /OOOO000OO00O0O00O .shape [-1 ]**0.5 ,dim =-1 )#line:27
+        OO0000O0O0OO0O0OO =O000O0O0OOO0OO0OO .dropout (OO0000O0O0OO0O0OO )#line:28
+        O0OO0OO0000O000O0 =(OO0000O0O0OO0O0OO @O00O0O0OOOOOO00O0 ).transpose (1 ,2 )#line:29
+        O0OO0OO0000O000O0 =O0OO0OO0000O000O0 .contiguous ().view (O0O00O00O00OO0OOO ,O00O00O0OO000O0OO ,O000O0O0OOO0OO0OO .d_out )#line:30
+        O0OO0OO0000O000O0 =O000O0O0OOO0OO0OO .out_proj (O0OO0OO0000O000O0 )#line:31
+        return O0OO0OO0000O000O0 
 
-class LayerNorm(nn.Module):
-    def __init__(self, emb_dim):
-        super().__init__()
-        self.eps = 1e-5
-        self.scale = nn.Parameter(torch.ones(emb_dim))
-        self.shift = nn.Parameter(torch.zeros(emb_dim))
+class LayerNorm (nn .Module ):#line:1
+    def __init__ (O0O0O00000OOOOO0O ,OO0OOOO00O000O0OO ):#line:2
+        super ().__init__ ()#line:3
+        O0O0O00000OOOOO0O .eps =1e-5 #line:4
+        O0O0O00000OOOOO0O .scale =nn .Parameter (torch .ones (OO0OOOO00O000O0OO ))#line:5
+        O0O0O00000OOOOO0O .shift =nn .Parameter (torch .zeros (OO0OOOO00O000O0OO ))#line:6
+    def forward (O0000O00000OOOOO0 ,O0O00O0O0000OOO00 ):#line:8
+        O0O000O0O00OO00O0 =O0O00O0O0000OOO00 .mean (dim =-1 ,keepdim =True )#line:9
+        O000OO00O00OOOOO0 =O0O00O0O0000OOO00 .var (dim =-1 ,keepdim =True ,unbiased =False )#line:10
+        OO000OO000OOOOOOO =(O0O00O0O0000OOO00 -O0O000O0O00OO00O0 )/torch .sqrt (O000OO00O00OOOOO0 +O0000O00000OOOOO0 .eps )#line:11
+        return O0000O00000OOOOO0 .scale *OO000OO000OOOOOOO +O0000O00000OOOOO0 .shift 
 
-    def forward(self, x):
-        mean = x.mean(dim=-1, keepdim=True)
-        var = x.var(dim=-1, keepdim=True, unbiased=False)
-        norm_x = (x - mean) / torch.sqrt(var + self.eps)
-        return self.scale * norm_x + self.shift
+class GELU (nn .Module ):#line:1
+    def __init__ (O0O00OO00O00OO00O ):#line:2
+        super ().__init__ ()#line:3
+    def forward (OO0OOO0OO00000OO0 ,O0OO0O0OO00O000OO ):#line:4
+        return 0.5 *O0OO0O0OO00O000OO *(1 +torch .tanh (torch .sqrt (torch .tensor (2.0 /torch .pi ))*(O0OO0O0OO00O000OO +0.044715 *torch .pow (O0OO0O0OO00O000OO ,3 ))))#line:5
 
-class GELU(nn.Module):
-    def __init__(self):
-        super().__init__()
-    def forward(self, x):
-        return 0.5 * x * (1 + torch.tanh(torch.sqrt(torch.tensor(2.0 / torch.pi)) *(x + 0.044715 * torch.pow(x, 3))))
+class FeedForward (nn .Module ):#line:1
+    def __init__ (OO000O0O0O0OOO0O0 ,OO00O000O0OO0OO00 ):#line:2
+        super ().__init__ ()#line:3
+        OO000O0O0O0OOO0O0 .layers =nn .Sequential (nn .Linear (OO00O000O0OO0OO00 ["emb_dim"],4 *OO00O000O0OO0OO00 ["emb_dim"]),GELU (),nn .Linear (4 *OO00O000O0OO0OO00 ["emb_dim"],OO00O000O0OO0OO00 ["emb_dim"]),)#line:4
+    def forward (OO0OO00000O00OO00 ,O0OOOO00000O0O00O ):#line:5
+        return OO0OO00000O00OO00 .layers (O0OOOO00000O0O00O )#line:6
 
-class FeedForward(nn.Module):
-    def __init__(self, cfg):
-        super().__init__()
-        self.layers = nn.Sequential(nn.Linear(cfg["emb_dim"], 4 * cfg["emb_dim"]),GELU(),nn.Linear(4 * cfg["emb_dim"], cfg["emb_dim"]),)
-    def forward(self, x):
-        return self.layers(x)
+class TransformerBlock (nn .Module ):#line:1
+    def __init__ (OO0OO0OO00O0OO00O ,OO0000OOOOO00OO0O ):#line:2
+        super ().__init__ ()#line:3
+        OO0OO0OO00O0OO00O .att =MultiHeadAttention (d_in =OO0000OOOOO00OO0O ["emb_dim"],d_out =OO0000OOOOO00OO0O ["emb_dim"],context_length =OO0000OOOOO00OO0O ["context_length"],num_heads =OO0000OOOOO00OO0O ["n_heads"],dropout =OO0000OOOOO00OO0O ["drop_rate"],qkv_bias =OO0000OOOOO00OO0O ["qkv_bias"])#line:4
+        OO0OO0OO00O0OO00O .ff =FeedForward (OO0000OOOOO00OO0O )#line:5
+        OO0OO0OO00O0OO00O .norm1 =LayerNorm (OO0000OOOOO00OO0O ["emb_dim"])#line:6
+        OO0OO0OO00O0OO00O .norm2 =LayerNorm (OO0000OOOOO00OO0O ["emb_dim"])#line:7
+        OO0OO0OO00O0OO00O .drop_shortcut =nn .Dropout (OO0000OOOOO00OO0O ["drop_rate"])#line:8
+    def forward (O0O0OOO0OO000O000 ,OO000O0000000O0O0 ):#line:9
+        O00O0000O00O00OO0 =OO000O0000000O0O0 #line:10
+        OO000O0000000O0O0 =O0O0OOO0OO000O000 .norm1 (OO000O0000000O0O0 )#line:11
+        OO000O0000000O0O0 =O0O0OOO0OO000O000 .att (OO000O0000000O0O0 )#line:12
+        OO000O0000000O0O0 =O0O0OOO0OO000O000 .drop_shortcut (OO000O0000000O0O0 )#line:13
+        OO000O0000000O0O0 =OO000O0000000O0O0 +O00O0000O00O00OO0 #line:14
+        O00O0000O00O00OO0 =OO000O0000000O0O0 #line:15
+        OO000O0000000O0O0 =O0O0OOO0OO000O000 .norm2 (OO000O0000000O0O0 )#line:16
+        OO000O0000000O0O0 =O0O0OOO0OO000O000 .ff (OO000O0000000O0O0 )#line:17
+        OO000O0000000O0O0 =O0O0OOO0OO000O000 .drop_shortcut (OO000O0000000O0O0 )#line:18
+        OO000O0000000O0O0 =OO000O0000000O0O0 +O00O0000O00O00OO0 #line:19
+        return OO000O0000000O0O0 
 
-class TransformerBlock(nn.Module):
-    def __init__(self, cfg):
-        super().__init__()
-        self.att = MultiHeadAttention(d_in=cfg["emb_dim"],d_out=cfg["emb_dim"],context_length=cfg["context_length"],num_heads=cfg["n_heads"],dropout=cfg["drop_rate"],qkv_bias=cfg["qkv_bias"])
-        self.ff = FeedForward(cfg)
-        self.norm1 = LayerNorm(cfg["emb_dim"])
-        self.norm2 = LayerNorm(cfg["emb_dim"])
-        self.drop_shortcut = nn.Dropout(cfg["drop_rate"])
-    def forward(self, x):
-        shortcut = x
-        x = self.norm1(x)
-        x = self.att(x)
-        x = self.drop_shortcut(x)
-        x = x + shortcut
-        shortcut = x
-        x = self.norm2(x)
-        x = self.ff(x)
-        x = self.drop_shortcut(x)
-        x = x + shortcut
-        return x
+class LLMModel (nn .Module ):#line:1
+    def __init__ (O00O0O0OOO0OO0OO0 ,O0O00000OOOO0O0OO ):#line:2
+        super ().__init__ ()#line:3
+        O00O0O0OOO0OO0OO0 .tok_emb =nn .Embedding (O0O00000OOOO0O0OO ["vocab_size"],O0O00000OOOO0O0OO ["emb_dim"])#line:4
+        O00O0O0OOO0OO0OO0 .pos_emb =nn .Embedding (O0O00000OOOO0O0OO ["context_length"],O0O00000OOOO0O0OO ["emb_dim"])#line:5
+        O00O0O0OOO0OO0OO0 .drop_emb =nn .Dropout (O0O00000OOOO0O0OO ["drop_rate"])#line:6
+        O00O0O0OOO0OO0OO0 .trf_blocks =nn .Sequential (*[TransformerBlock (O0O00000OOOO0O0OO )for _O0O00OO000O0O0OOO in range (O0O00000OOOO0O0OO ["n_layers"])])#line:7
+        O00O0O0OOO0OO0OO0 .final_norm =LayerNorm (O0O00000OOOO0O0OO ["emb_dim"])#line:8
+        O00O0O0OOO0OO0OO0 .out_head =nn .Linear (O0O00000OOOO0O0OO ["emb_dim"],O0O00000OOOO0O0OO ["vocab_size"],bias =False )#line:9
+    def forward (OOOOO0OO00000O00O ,O000O0OOOO00O0000 ):#line:10
+        O00000OO0O00OOOOO ,O00OO0O0OO00000O0 =O000O0OOOO00O0000 .shape #line:11
+        OOOO0OO0OO0OOOO00 =OOOOO0OO00000O00O .tok_emb (O000O0OOOO00O0000 )#line:12
+        O0000O0OO0O0OO000 =OOOOO0OO00000O00O .pos_emb (torch .arange (O00OO0O0OO00000O0 ,device =O000O0OOOO00O0000 .device ))#line:13
+        O0OO000O0O0OO0OO0 =OOOO0OO0OO0OOOO00 +O0000O0OO0O0OO000 #line:14
+        O0OO000O0O0OO0OO0 =OOOOO0OO00000O00O .drop_emb (O0OO000O0O0OO0OO0 )#line:15
+        O0OO000O0O0OO0OO0 =OOOOO0OO00000O00O .trf_blocks (O0OO000O0O0OO0OO0 )#line:16
+        O0OO000O0O0OO0OO0 =OOOOO0OO00000O00O .final_norm (O0OO000O0O0OO0OO0 )#line:17
+        O00OO0OO0O00O0OO0 =OOOOO0OO00000O00O .out_head (O0OO000O0O0OO0OO0 )#line:18
+        return O00OO0OO0O00O0OO0 
 
-class LLMModel(nn.Module):
-    def __init__(self, cfg):
-        super().__init__()
-        self.tok_emb = nn.Embedding(cfg["vocab_size"], cfg["emb_dim"])
-        self.pos_emb = nn.Embedding(cfg["context_length"], cfg["emb_dim"])
-        self.drop_emb = nn.Dropout(cfg["drop_rate"])
-        self.trf_blocks = nn.Sequential(*[TransformerBlock(cfg) for _ in range(cfg["n_layers"])])
-        self.final_norm = LayerNorm(cfg["emb_dim"])
-        self.out_head = nn.Linear(cfg["emb_dim"], cfg["vocab_size"], bias=False)
-    def forward(self, in_idx):
-        batch_size, seq_len = in_idx.shape
-        tok_embeds = self.tok_emb(in_idx)
-        pos_embeds = self.pos_emb(torch.arange(seq_len, device=in_idx.device))
-        x = tok_embeds + pos_embeds
-        x = self.drop_emb(x)
-        x = self.trf_blocks(x)
-        x = self.final_norm(x)
-        logits = self.out_head(x)
-        return logits
+def calc_loss_batch (OOOOOO0O00000O0OO ,O00OOOO0000OO0000 ,O0OOOO00O0O0O0OOO ,O0OOO000O0O00OOOO ):#line:1
+    OOOOOO0O00000O0OO ,O00OOOO0000OO0000 =OOOOOO0O00000O0OO .to (O0OOO000O0O00OOOO ),O00OOOO0000OO0000 .to (O0OOO000O0O00OOOO )#line:2
+    O0O0O00OOO0O0O00O =O0OOOO00O0O0O0OOO (OOOOOO0O00000O0OO )#line:3
+    OOO0O00O0O0OOOO00 =torch .nn .functional .cross_entropy (O0O0O00OOO0O0O00O .flatten (0 ,1 ),O00OOOO0000OO0000 .flatten ())#line:4
+    return OOO0O00O0O0OOOO00 
 
-def calc_loss_batch(input_batch, target_batch, model, device):
-    input_batch, target_batch = input_batch.to(device), target_batch.to(device)
-    logits = model(input_batch)
-    loss = torch.nn.functional.cross_entropy(logits.flatten(0, 1), target_batch.flatten())
-    return loss
+def calc_loss_loader (OO00000OOOOO00000 ,O000OO000O00OO0O0 ,O0000O0O00OO0OO0O ,num_batches =None ,Train =True ,index =0 ):#line:1
+    OOOO000O00000O000 =0. #line:2
+    if len (OO00000OOOOO00000 )==0 :#line:4
+        return float ("nan")#line:5
+    if num_batches is None :#line:6
+        num_batches =len (OO00000OOOOO00000 )#line:7
+    else :#line:8
+        num_batches =min (num_batches ,len (OO00000OOOOO00000 ))#line:9
+    if Train :#line:11
+        if index <=5 :#line:12
+            num_batches =index #line:13
+        for OOOOOO0O00O00OO0O ,(O0O0OO0OO000000O0 ,O0OOOOO0O000O0OO0 )in enumerate (OO00000OOOOO00000 ):#line:14
+            if OOOOOO0O00O00OO0O <=index -1 and OOOOOO0O00O00OO0O >=index -5 :#line:15
+                O0O00O0000O00OOOO =calc_loss_batch (O0O0OO0OO000000O0 ,O0OOOOO0O000O0OO0 ,O000OO000O00OO0O0 ,O0000O0O00OO0OO0O )#line:16
+                OOOO000O00000O000 +=O0O00O0000O00OOOO .item ()#line:17
+        return OOOO000O00000O000 /num_batches #line:19
+    else :#line:20
+        O00O0OO00OOO0000O =random .sample (range (len (OO00000OOOOO00000 )),num_batches )#line:21
+        for OOOOOO0O00O00OO0O ,(O0O0OO0OO000000O0 ,O0OOOOO0O000O0OO0 )in enumerate (OO00000OOOOO00000 ):#line:22
+            if OOOOOO0O00O00OO0O in O00O0OO00OOO0000O :#line:23
+                O0O00O0000O00OOOO =calc_loss_batch (O0O0OO0OO000000O0 ,O0OOOOO0O000O0OO0 ,O000OO000O00OO0O0 ,O0000O0O00OO0OO0O )#line:24
+                OOOO000O00000O000 +=O0O00O0000O00OOOO .item ()#line:25
+        return OOOO000O00000O000 /num_batches 
 
-def calc_loss_loader(data_loader, model, device, num_batches=None, Train=True, index=0):
-    total_loss = 0.
-    
-    if len(data_loader) == 0:
-        return float("nan")
-    if num_batches is None:
-        num_batches = len(data_loader)
-    else:
-        num_batches = min(num_batches, len(data_loader))
-    
-    if Train:
-        if index <= 5:
-            num_batches = index
-        for i, (input_batch, target_batch) in enumerate(data_loader):
-            if i <= index - 1 and i >= index - 5:
-                loss = calc_loss_batch(input_batch, target_batch, model, device)
-                total_loss += loss.item()
-                
-        return total_loss / num_batches
-    else:
-        indices = random.sample(range(len(data_loader)), num_batches)
-        for i, (input_batch, target_batch) in enumerate(data_loader):
-            if i in indices:
-                loss = calc_loss_batch(input_batch, target_batch, model, device)
-                total_loss += loss.item()
-    
-        return total_loss / num_batches
+def Evaluate (O00OO0000O00O0OOO ,OO0O0OOO0OOOO00O0 ,OOOO0OOO0000OO0O0 ,OOOOO0O0O00O00000 ,OO0OOO00OO0000000 ,OOOOO000OOOOO00OO ):#line:1
+    O00OO0000O00O0OOO .eval ()#line:2
+    with torch .no_grad ():#line:3
+        OOOOO000OOOOO00OO =1 if OOOOO000OOOOO00OO ==0 else OOOOO000OOOOO00OO #line:4
+        O0OOO0OO0000O000O =calc_loss_loader (OO0O0OOO0OOOO00O0 ,O00OO0000O00O0OOO ,OOOOO0O0O00O00000 ,num_batches =OO0OOO00OO0000000 ,Train =True ,index =OOOOO000OOOOO00OO )#line:5
+        OO0OO000OO0OO0000 =calc_loss_loader (OOOO0OOO0000OO0O0 ,O00OO0000O00O0OOO ,OOOOO0O0O00O00000 ,num_batches =OO0OOO00OO0000000 ,Train =False ,index =0 )#line:6
+    O00OO0000O00O0OOO .train ()#line:7
+    return O0OOO0OO0000O000O ,OO0OO000OO0OO0000 
 
-def Evaluate(model, train_loader, val_loader, device, eval_iter, i):
-    model.eval()
-    with torch.no_grad():
-        i = 1 if i == 0 else i
-        train_loss = calc_loss_loader(train_loader, model, device, num_batches=eval_iter, Train=True, index=i)
-        val_loss = calc_loss_loader(val_loader, model, device, num_batches=eval_iter, Train=False, index=0)
-    model.train()
-    return train_loss, val_loss
-
-def Generate(model, idx, max_new_tokens, context_size):
-    for _ in range(max_new_tokens):
-        idx_cond = idx[:, -context_size:]
-        with torch.no_grad():
-            logits = model(idx_cond)
-        logits = logits[:, -1, :]
-        probas = torch.softmax(logits, dim=-1)
-        idx_next = torch.argmax(probas, dim=-1, keepdim=True)
-        idx = torch.cat((idx, idx_next), dim=1)
-    return idx
+def Generate (OOO0OO0OOO0O0O000 ,O0O00O000000OO0OO ,OOO0OO0OOOO00OO00 ,OO0OOOOO00O000000 ):#line:1
+    for _O00O0OO00OOOOOO00 in range (OOO0OO0OOOO00OO00 ):#line:2
+        OOOOO0OO0O00OOOOO =O0O00O000000OO0OO [:,-OO0OOOOO00O000000 :]#line:3
+        with torch .no_grad ():#line:4
+            OO0OO0000O00O0O00 =OOO0OO0OOO0O0O000 (OOOOO0OO0O00OOOOO )#line:5
+        OO0OO0000O00O0O00 =OO0OO0000O00O0O00 [:,-1 ,:]#line:6
+        OOO0O0000OO00OO00 =torch .softmax (OO0OO0000O00O0O00 ,dim =-1 )#line:7
+        O0O00OOOOO00OOO00 =torch .argmax (OOO0O0000OO00OO00 ,dim =-1 ,keepdim =True )#line:8
+        O0O00O000000OO0OO =torch .cat ((O0O00O000000OO0OO ,O0O00OOOOO00OOO00 ),dim =1 )#line:9
+    return O0O00O000000OO0OO 
