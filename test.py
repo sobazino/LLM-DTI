@@ -8,7 +8,7 @@ import os
 
 current_dir = os.path.dirname(__file__)
 database_file = os.path.join(current_dir, 'FULL_DATABASE1.txt')
-database_MolTrans = os.path.join(current_dir, 'database')
+database_MolTrans = os.path.join(current_dir, 'Dataset')
 res = os.path.join(current_dir)
 
 class Tokenizer:
